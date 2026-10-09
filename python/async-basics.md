@@ -30,7 +30,7 @@ await dispatcher.start_polling(bot)
 
 ---
 
-## `async def` چیست؟
+## اصلاحیه: `async def` چیست؟
 
 در Python برای تعریف یک function معمولی می‌نویسیم:
 
@@ -54,7 +54,7 @@ async def
     asynchronous function
 ```
 
-`async` به Python می‌گوید که این function یک coroutine function است و می‌تواند در محیط asynchronous اجرا شود.
+نکته: `async` به Python می‌گوید که این function یک coroutine function است و می‌تواند در محیط asynchronous اجرا شود.
 
 مثلاً در پروژه:
 
@@ -66,7 +66,7 @@ async def main() -> None: ...
 
 ---
 
-## Coroutine چیست؟
+## اصلاحیه: Coroutine چیست؟
 
 وقتی یک `async def` را صدا می‌زنیم، function مثل یک function معمولی فوراً اجرا نمی‌شود.
 
@@ -104,9 +104,9 @@ event loop
 
 ---
 
-## `await` چیست؟
+## اصلاحیه: `await` چیست؟
 
-`await` یعنی:
+نکته: `await` یعنی:
 
 > اجرای این coroutine را ادامه بده، اما اجازه بده event loop در زمان انتظار کارهای asynchronous دیگری را انجام دهد.
 
@@ -179,9 +179,9 @@ database response
 
 ---
 
-## I/O چیست؟
+## اصلاحیه: I/O چیست؟
 
-I/O مخفف:
+نکته: I/O مخفف:
 
 ```text
 Input / Output
@@ -225,9 +225,11 @@ Telegram upload
 
 ---
 
-## Event Loop چیست؟
+## اصلاحیه: Event Loop چیست؟
 
-Event loop را می‌توان به عنوان موتور اجرای asynchronous code در نظر گرفت.
+نکته: Event loop را می‌توان به عنوان موتور اجرای asynchronous code در نظر گرفت.
+
+
 
 به صورت ساده:
 
