@@ -1,76 +1,74 @@
 # Python Async Basics
 
-## چرا این موضوع در پروژه Media Bot مهم است؟
+## Why This Topic Matters in the Media Bot Project
 
-پروژه `media-bot` با `aiogram` و SQLAlchemy به صورت asynchronous کار می‌کند.
+The `media-bot` project uses `aiogram` and SQLAlchemy asynchronously.
 
-یعنی برنامه قرار نیست هنگام انجام کارهایی مثل:
+This means the program is not supposed to freeze the entire application while waiting for tasks such as:
 
-- دریافت پیام Telegram
-- اجرای query روی PostgreSQL
-- دریافت اطلاعات از یک سرویس خارجی
-- دانلود یک فایل
-- ارسال فایل به Telegram
+- Receiving Telegram messages
+- Running queries on PostgreSQL
+- Fetching data from an external service
+- Downloading a file
+- Uploading a file to Telegram
 
-کل برنامه را متوقف کند و منتظر تمام شدن آن کار بماند.
-
-برای همین در کد پروژه با چیزهایی مثل این مواجه می‌شویم:
+That's why we encounter things like this in the project code:
 
 ```python
 async def main(): ...
 ```
 
-و:
+And:
 
 ```python
 await dispatcher.start_polling(bot)
 ```
 
-برای فهمیدن این کدها باید چند مفهوم را از هم جدا کنیم.
+To understand these, we need to separate a few concepts.
 
 ---
 
-## اصلاحیه: `async def` چیست؟
+## Clarification: What Is `async def`?
 
-در Python برای تعریف یک function معمولی می‌نویسیم:
+In Python, to define a regular function, we write:
 
 ```python
 def get_user(): ...
 ```
 
-اما برای تعریف یک asynchronous function می‌نویسیم:
+But to define an asynchronous function, we write:
 
 ```python
 async def get_user(): ...
 ```
 
-پس:
+So:
 
 ```text
 def
-    function معمولی
+    regular function
 
 async def
     asynchronous function
 ```
 
-نکته: `async` به Python می‌گوید که این function یک coroutine function است و می‌تواند در محیط asynchronous اجرا شود.
+Note: `async` tells Python that this function is a coroutine function and can run in an asynchronous environment.
 
-مثلاً در پروژه:
+For example, in the project:
 
 ```python
 async def main() -> None: ...
 ```
 
-تابع `main` یک asynchronous function است.
+The `main` function is an asynchronous function.
 
 ---
 
-## اصلاحیه: Coroutine چیست؟
+## Clarification: What Is a Coroutine?
 
-وقتی یک `async def` را صدا می‌زنیم، function مثل یک function معمولی فوراً اجرا نمی‌شود.
+When we call an `async def` function, it does not execute immediately like a regular function.
 
-مثلاً:
+For example:
 
 ```python
 async def get_user():
@@ -80,11 +78,11 @@ async def get_user():
 result = get_user()
 ```
 
-اینجا `result` مقدار `"Mehran"` نیست.
+Here, `result` is not the value `"Mehran"`.
 
-بلکه یک coroutine object است که باید توسط event loop اجرا شود.
+Instead, it is a coroutine object that must be executed by the event loop.
 
-به زبان ساده:
+In simple terms:
 
 ```text
 async def
@@ -97,101 +95,99 @@ coroutine object
 
 event loop
     ↓
-اجرای coroutine
+executes the coroutine
 ```
 
-برای همین در کد پروژه با `await` مواجه می‌شویم.
+That's why we encounter `await` in the project code.
 
 ---
 
-## اصلاحیه: `await` چیست؟
+## Clarification: What Is `await`?
 
-نکته: `await` یعنی:
+Note: `await` means:
 
-> اجرای این coroutine را ادامه بده، اما اجازه بده event loop در زمان انتظار کارهای asynchronous دیگری را انجام دهد.
+> Continue executing this coroutine, but allow the event loop to perform other asynchronous work while waiting.
 
-مثلاً:
+For example:
 
 ```python
 async def main():
     await dispatcher.start_polling(bot)
 ```
 
-اینجا `start_polling()` یک عملیات asynchronous است.
+Here, `start_polling()` is an asynchronous operation.
 
-ما نمی‌خواهیم آن را مثل یک function معمولی صدا بزنیم:
+We don't want to call it like a regular function:
 
 ```python
 dispatcher.start_polling(bot)
 ```
 
-بلکه می‌نویسیم:
+Instead, we write:
 
 ```python
 await dispatcher.start_polling(bot)
 ```
 
-چون باید coroutine اجرا و مدیریت شود.
+Because the coroutine must be executed and managed.
 
 ---
 
-## چرا `await` برنامه را کامل متوقف نمی‌کند؟
+## Why Doesn't `await` Fully Stop the Program?
 
-فرض کنیم bot باید از PostgreSQL اطلاعات بگیرد.
+Suppose the bot needs to fetch data from PostgreSQL.
 
-اگر برنامه به شکل کاملاً synchronous کار کند:
+If the program runs fully synchronously:
 
 ```text
 Python
   ↓
 Database query
   ↓
-منتظر PostgreSQL
+Waiting for PostgreSQL
   ↓
-دریافت نتیجه
+Receiving the result
   ↓
-ادامه برنامه
+Continuing the program
 ```
 
-در زمان انتظار، thread می‌تواند عملاً بیکار باشد.
+During the wait, the thread may effectively be idle.
 
-در مدل asynchronous:
+In the asynchronous model:
 
 ```text
 Python
   ↓
 Database query
   ↓
-منتظر PostgreSQL
+Waiting for PostgreSQL
   │
-  ├── کار دیگری آماده اجراست
+  ├── Another task is ready to run
   │
-  ├── Telegram event دیگری رسیده
+  ├── Another Telegram event has arrived
   │
-  └── operation دیگری آماده اجراست
+  └── Another operation is ready to run
   ↓
 database response
   ↓
-ادامه coroutine
+continuing the coroutine
 ```
 
-بنابراین asynchronous programming مخصوصاً برای برنامه‌هایی که مقدار زیادی I/O دارند مفید است.
+Therefore, asynchronous programming is especially useful for programs that involve a lot of I/O.
 
 ---
 
-## اصلاحیه: I/O چیست؟
+## Clarification: What Is I/O?
 
-نکته: I/O مخفف:
+Note: I/O stands for:
 
 ```text
 Input / Output
 ```
 
-است.
+Any task where the program needs to communicate with an external resource is generally considered I/O.
 
-هر کاری که برنامه باید با یک منبع خارجی ارتباط برقرار کند، معمولاً I/O محسوب می‌شود.
-
-مثلاً:
+For example:
 
 ```text
 PostgreSQL
@@ -201,9 +197,9 @@ File system
 Network
 ```
 
-در `media-bot` این موضوع بسیار مهم است، چون برنامه احتمالاً مقدار زیادی I/O خواهد داشت.
+In `media-bot`, this is very important because the program will likely involve a lot of I/O.
 
-مثلاً:
+For example:
 
 ```text
 Telegram message
@@ -221,148 +217,144 @@ file storage
 Telegram upload
 ```
 
-بخش بزرگی از این workflow شامل انتظار برای منابع خارجی است.
+A large part of this workflow involves waiting for external resources.
 
 ---
 
-## اصلاحیه: Event Loop چیست؟
+## Clarification: What Is an Event Loop?
 
-نکته: Event loop را می‌توان به عنوان موتور اجرای asynchronous code در نظر گرفت.
+Note: The event loop can be thought of as the engine that runs asynchronous code.
 
-
-
-به صورت ساده:
+Simply put:
 
 ```text
 Event Loop
     │
-    ├── coroutine A → منتظر database
+    ├── coroutine A → waiting for database
     │
-    ├── coroutine B → آماده اجرا
+    ├── coroutine B → ready to run
     │
-    ├── coroutine C → منتظر network
+    ├── coroutine C → waiting for network
     │
-    └── coroutine D → آماده اجرا
+    └── coroutine D → ready to run
 ```
 
-وقتی یک coroutine به یک عملیات I/O می‌رسد و باید منتظر بماند، event loop می‌تواند coroutine دیگری را اجرا کند.
+When a coroutine reaches an I/O operation and must wait, the event loop can run another coroutine.
 
-این یکی از پایه‌های asynchronous programming در Python است.
+This is one of the foundations of asynchronous programming in Python.
 
 ---
 
-## چرا `asyncio.run()` داریم؟
+## Why Do We Have `asyncio.run()`?
 
-در فایل `main.py` پروژه:
+In the project's `main.py` file:
 
 ```python
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-تابع `main()` یک coroutine function است.
+The `main()` function is a coroutine function.
 
-برای اجرای آن باید یک event loop داشته باشیم.
+To execute it, we need an event loop.
 
-`asyncio.run()` این کار را برای ما انجام می‌دهد.
+`asyncio.run()` does this for us.
 
-به صورت مفهومی:
+Conceptually:
 
 ```text
 asyncio.run(main())
         ↓
-ایجاد event loop
+create event loop
         ↓
-اجرای main()
+run main()
         ↓
-مدیریت coroutine
+manage coroutines
         ↓
-پایان event loop
+end event loop
 ```
 
-پس این دو مفهوم را نباید با هم اشتباه بگیریم:
+So we should not confuse these two concepts:
 
 ```python
 async def main():
 ```
 
-تعریف یک asynchronous function است.
+This defines an asynchronous function.
 
-در حالی که:
+Whereas:
 
 ```python
 asyncio.run(main())
 ```
 
-آن coroutine را از نقطه شروع برنامه اجرا می‌کند.
+This runs that coroutine from the program's entry point.
 
 ---
 
-## چرا Database هم async است؟
+## Why Is the Database Also Async?
 
-در پروژه از SQLAlchemy با async support استفاده می‌کنیم:
+In the project, we use SQLAlchemy with async support:
 
 ```python
 from sqlalchemy.ext.asyncio import AsyncSession
 ```
 
-و database driver ما:
+And our database driver is:
 
 ```text
 asyncpg
 ```
 
-است.
+Therefore, database queries can also be executed asynchronously.
 
-بنابراین queryهای database هم می‌توانند به صورت asynchronous اجرا شوند.
-
-مثلاً:
+For example:
 
 ```python
 result = await session.execute(statement)
 ```
 
-در اینجا:
+Here:
 
 ```text
 session.execute(...)
 ```
 
-یک عملیات asynchronous است.
+is an asynchronous operation.
 
-و:
+And:
 
 ```python
 await
 ```
 
-به برنامه اجازه می‌دهد در زمان انتظار برای database، event loop بتواند کارهای دیگری را مدیریت کند.
+allows the event loop to manage other tasks while waiting for the database.
 
 ---
 
-## یک اشتباه رایج
+## A Common Mistake
 
-این دو را با هم اشتباه نگیریم:
+Let's not confuse these two:
 
 ```python
 async def get_user(): ...
 ```
 
-و:
+And:
 
 ```python
 await get_user()
 ```
 
-اولی function را تعریف می‌کند.
+The first defines a function.
 
-دومی coroutine حاصل از آن function را اجرا/منتظر می‌ماند.
+The second executes/awaits the coroutine produced by that function.
 
 ---
 
-## ارتباط این موضوع با Media Bot
+## How This Relates to Media Bot
 
-در معماری فعلی پروژه:
+In the project's current architecture:
 
 ```text
 Telegram
@@ -380,9 +372,9 @@ asyncpg
 PostgreSQL
 ```
 
-در چند نقطه asynchronous programming داریم.
+We have asynchronous programming at several points.
 
-مثلاً:
+For example:
 
 ```python
 async def main():
@@ -396,41 +388,41 @@ async def get_by_telegram_id(...):
 result = await session.execute(statement)
 ```
 
-این‌ها اتفاقی نیستند.
+These are not accidental.
 
-هدف این است که workflowهای I/O-heavy پروژه بتوانند بدون block کردن کل application اجرا شوند.
+The goal is for the project's I/O-heavy workflows to run without blocking the entire application.
 
 ---
 
-## چیزهایی که فعلاً لازم نیست بدانم
+## What I Don't Need to Know Yet
 
-در این مرحله لازم نیست تمام جزئیات `asyncio` را یاد بگیرم.
+At this stage, I don't need to learn all the details of `asyncio`.
 
-فعلاً این mental model کافی است:
+For now, this mental model is sufficient:
 
 ```text
 async def
     ↓
-یک asynchronous function تعریف می‌کند
+defines an asynchronous function
 
 calling async function
     ↓
-coroutine می‌سازد
+creates a coroutine
 
 await
     ↓
-اجرای coroutine و انتظار asynchronous
+runs the coroutine and waits asynchronously
 
 event loop
     ↓
-مدیریت اجرای coroutineها
+manages the execution of coroutines
 
 I/O
     ↓
-جایی که معمولاً asynchronous programming بیشترین فایده را دارد
+where asynchronous programming is usually most beneficial
 ```
 
-بعداً هنگام پیشرفت پروژه می‌توانیم مفاهیم زیر را جداگانه یاد بگیریم:
+Later, as the project progresses, we can learn the following concepts separately:
 
 - coroutine
 - task
@@ -446,50 +438,50 @@ I/O
 
 ---
 
-## ارتباط با فایل‌های پروژه
+## Relation to Project Files
 
-برای دیدن این مفاهیم در پروژه فعلی:
+To see these concepts in the current project:
 
 ```text
 src/music_bot/main.py
 ```
 
-شروع asynchronous application را نشان می‌دهد.
+shows the start of the asynchronous application.
 
 ```text
 src/music_bot/repositories/user.py
 ```
 
-نشان می‌دهد database operation چگونه asynchronous شده است.
+shows how a database operation has been made asynchronous.
 
 ```text
 tests/conftest.py
 ```
 
-نشان می‌دهد چگونه async database engine و `AsyncSession` را در tests استفاده کرده‌ایم.
+shows how we've used an async database engine and `AsyncSession` in tests.
 
 ---
 
-## خلاصه
+## Summary
 
-مهم‌ترین چیزی که فعلاً باید به خاطر داشته باشم:
+The most important thing to remember for now:
 
 ```text
 async def
     ↓
-تعریف asynchronous function
+defines an asynchronous function
 
 await
     ↓
-انتظار برای یک عملیات asynchronous
+waits for an asynchronous operation
 
 event loop
     ↓
-مدیریت اجرای asynchronous کارها
+manages the execution of asynchronous tasks
 
 I/O
     ↓
-کارهایی مثل database و network که زمان انتظار دارند
+tasks like database and network that involve waiting
 ```
 
-در `media-bot` از async استفاده می‌کنیم چون بخش بزرگی از برنامه با Telegram، PostgreSQL، network و در آینده دانلود media سروکار خواهد داشت.
+In `media-bot`, we use async because a large part of the application deals with Telegram, PostgreSQL, the network, and—in the future—media downloads.
