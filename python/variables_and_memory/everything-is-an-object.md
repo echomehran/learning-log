@@ -1,386 +1,105 @@
-## همه‌چیز یک شیء است
+# Everything Is an Object
 
+## Variables Are Objects Too
 
 ```python
 a = 10
 ```
-نکته: **a** یک شیء از نوع **int** است، یعنی **a** یک نمونه از کلاس **int** است.
 
+**Note:** `a` is an object of type `int` — more precisely, `a` is an **instance** of the `int` class.
 
 ```python
 print(type(a))
+# <class 'int'>
 ```
 
-    <class 'int'>
-
-
-اگر **int** یک کلاس باشد، باید بتوانیم آن را با استفاده از روش استاندارد نمونه‌سازی کلاس تعریف کنیم:
-
+If `int` is a class, we should be able to create instances of it using the standard class instantiation syntax:
 
 ```python
 b = int(10)
+print(b)         # 10
+print(type(b))   # <class 'int'>
 ```
 
+So `10` and `int(10)` produce the **same kind of object**. The literal `10` is really just sugar for constructing an `int` instance.
 
-```python
-print(b)
-print(type(b))
-```
+---
 
-    10
-    <class 'int'>
+## Even Built-in Types Have Documentation
 
-
-حتی می‌توانیم مستندات کلاس را درخواست کنیم:
-
+We can ask Python for the documentation of any class:
 
 ```python
 help(int)
 ```
 
-    Help on class int in module builtins:
-    
-    class int(object)
-     |  int(x=0) -> integer
-     |  int(x, base=10) -> integer
-     |  
-     |  Convert a number or string to an integer, or return 0 if no arguments
-     |  are given.  If x is a number, return x.__int__().  For floating point
-     |  numbers, this truncates towards zero.
-     |  
-     |  If x is not a number or if base is given, then x must be a string,
-     |  bytes, or bytearray instance representing an integer literal in the
-     |  given base.  The literal can be preceded by '+' or '-' and be surrounded
-     |  by whitespace.  The base defaults to 10.  Valid bases are 0 and 2-36.
-     |  Base 0 means to interpret the base from the string as an integer literal.
-     |  >>> int('0b100', base=0)
-     |  4
-     |  
-     |  Methods defined here:
-     |  
-     |  __abs__(self, /)
-     |      abs(self)
-     |  
-     |  __add__(self, value, /)
-     |      Return self+value.
-     |  
-     |  __and__(self, value, /)
-     |      Return self&value.
-     |  
-     |  __bool__(self, /)
-     |      self != 0
-     |  
-     |  __ceil__(...)
-     |      Ceiling of an Integral returns itself.
-     |  
-     |  __divmod__(self, value, /)
-     |      Return divmod(self, value).
-     |  
-     |  __eq__(self, value, /)
-     |      Return self==value.
-     |  
-     |  __float__(self, /)
-     |      float(self)
-     |  
-     |  __floor__(...)
-     |      Flooring an Integral returns itself.
-     |  
-     |  __floordiv__(self, value, /)
-     |      Return self//value.
-     |  
-     |  __format__(...)
-     |      default object formatter
-     |  
-     |  __ge__(self, value, /)
-     |      Return self>=value.
-     |  
-     |  __getattribute__(self, name, /)
-     |      Return getattr(self, name).
-     |  
-     |  __getnewargs__(...)
-     |  
-     |  __gt__(self, value, /)
-     |      Return self>value.
-     |  
-     |  __hash__(self, /)
-     |      Return hash(self).
-     |  
-     |  __index__(self, /)
-     |      Return self converted to an integer, if self is suitable for use as an index into a list.
-     |  
-     |  __int__(self, /)
-     |      int(self)
-     |  
-     |  __invert__(self, /)
-     |      ~self
-     |  
-     |  __le__(self, value, /)
-     |      Return self<=value.
-     |  
-     |  __lshift__(self, value, /)
-     |      Return self<<value.
-     |  
-     |  __lt__(self, value, /)
-     |      Return self<value.
-     |  
-     |  __mod__(self, value, /)
-     |      Return self%value.
-     |  
-     |  __mul__(self, value, /)
-     |      Return self*value.
-     |  
-     |  __ne__(self, value, /)
-     |      Return self!=value.
-     |  
-     |  __neg__(self, /)
-     |      -self
-     |  
-     |  __new__(*args, **kwargs) from builtins.type
-     |      Create and return a new object.  See help(type) for accurate signature.
-     |  
-     |  __or__(self, value, /)
-     |      Return self|value.
-     |  
-     |  __pos__(self, /)
-     |      +self
-     |  
-     |  __pow__(self, value, mod=None, /)
-     |      Return pow(self, value, mod).
-     |  
-     |  __radd__(self, value, /)
-     |      Return value+self.
-     |  
-     |  __rand__(self, value, /)
-     |      Return value&self.
-     |  
-     |  __rdivmod__(self, value, /)
-     |      Return divmod(value, self).
-     |  
-     |  __repr__(self, /)
-     |      Return repr(self).
-     |  
-     |  __rfloordiv__(self, value, /)
-     |      Return value//self.
-     |  
-     |  __rlshift__(self, value, /)
-     |      Return value<<self.
-     |  
-     |  __rmod__(self, value, /)
-     |      Return value%self.
-     |  
-     |  __rmul__(self, value, /)
-     |      Return value*self.
-     |  
-     |  __ror__(self, value, /)
-     |      Return value|self.
-     |  
-     |  __round__(...)
-     |      Rounding an Integral returns itself.
-     |      Rounding with an ndigits argument also returns an integer.
-     |  
-     |  __rpow__(self, value, mod=None, /)
-     |      Return pow(value, self, mod).
-     |  
-     |  __rrshift__(self, value, /)
-     |      Return value>>self.
-     |  
-     |  __rshift__(self, value, /)
-     |      Return self>>value.
-     |  
-     |  __rsub__(self, value, /)
-     |      Return value-self.
-     |  
-     |  __rtruediv__(self, value, /)
-     |      Return value/self.
-     |  
-     |  __rxor__(self, value, /)
-     |      Return value^self.
-     |  
-     |  __sizeof__(...)
-     |      Returns size in memory, in bytes
-     |  
-     |  __str__(self, /)
-     |      Return str(self).
-     |  
-     |  __sub__(self, value, /)
-     |      Return self-value.
-     |  
-     |  __truediv__(self, value, /)
-     |      Return self/value.
-     |  
-     |  __trunc__(...)
-     |      Truncating an Integral returns itself.
-     |  
-     |  __xor__(self, value, /)
-     |      Return self^value.
-     |  
-     |  bit_length(...)
-     |      int.bit_length() -> int
-     |      
-     |      Number of bits necessary to represent self in binary.
-     |      >>> bin(37)
-     |      '0b100101'
-     |      >>> (37).bit_length()
-     |      6
-     |  
-     |  conjugate(...)
-     |      Returns self, the complex conjugate of any int.
-     |  
-     |  from_bytes(...) from builtins.type
-     |      int.from_bytes(bytes, byteorder, *, signed=False) -> int
-     |      
-     |      Return the integer represented by the given array of bytes.
-     |      
-     |      The bytes argument must be a bytes-like object (e.g. bytes or bytearray).
-     |      
-     |      The byteorder argument determines the byte order used to represent the
-     |      integer.  If byteorder is 'big', the most significant byte is at the
-     |      beginning of the byte array.  If byteorder is 'little', the most
-     |      significant byte is at the end of the byte array.  To request the native
-     |      byte order of the host system, use `sys.byteorder' as the byte order value.
-     |      
-     |      The signed keyword-only argument indicates whether two's complement is
-     |      used to represent the integer.
-     |  
-     |  to_bytes(...)
-     |      int.to_bytes(length, byteorder, *, signed=False) -> bytes
-     |      
-     |      Return an array of bytes representing an integer.
-     |      
-     |      The integer is represented using length bytes.  An OverflowError is
-     |      raised if the integer is not representable with the given number of
-     |      bytes.
-     |      
-     |      The byteorder argument determines the byte order used to represent the
-     |      integer.  If byteorder is 'big', the most significant byte is at the
-     |      beginning of the byte array.  If byteorder is 'little', the most
-     |      significant byte is at the end of the byte array.  To request the native
-     |      byte order of the host system, use `sys.byteorder' as the byte order value.
-     |      
-     |      The signed keyword-only argument determines whether two's complement is
-     |      used to represent the integer.  If signed is False and a negative integer
-     |      is given, an OverflowError is raised.
-     |  
-     |  ----------------------------------------------------------------------
-     |  Data descriptors defined here:
-     |  
-     |  denominator
-     |      the denominator of a rational number in lowest terms
-     |  
-     |  imag
-     |      the imaginary part of a complex number
-     |  
-     |  numerator
-     |      the numerator of a rational number in lowest terms
-     |  
-     |  real
-     |      the real part of a complex number
-    
+Among the docs, several things stand out:
 
+```text
+class int(object)
+ |  int(x=0) -> integer
+ |  int(x, base=10) -> integer
+```
 
-همان‌طور که از مستندات می‌بینیم، حتی می‌توانیم یک **int** را با استفاده از سازندهٔ سربارگذاری‌شده ایجاد کنیم:
+- `int` inherits from `object` — the root of all classes.
+- It has an **overloaded constructor**: it can be called with zero, one, or two arguments.
 
+The docs also reveal methods like `__add__`, `__bool__`, `__eq__`, and so on — every one of which is an **attribute on the object**, waiting to be called.
+
+### Using the overloaded constructor
+
+Because `int` accepts a `base`, we can parse numbers in arbitrary bases:
 
 ```python
 b = int('10', base=2)
+print(b)         # 2
+print(type(b))   # <class 'int'>
 ```
 
+The string `'10'` is interpreted as a **binary** literal, producing the integer `2`.
 
-```python
-print(b)
-print(type(b))
-```
-
-    2
-    <class 'int'>
-
-
-### توابع نیز شیء هستند
 ---
 
+## Functions Are Objects Too
+
+A function defined with `def` is not merely a syntactic construct — it's a **first-class object**.
 
 ```python
 def square(a):
     return a ** 2
-```
 
-
-```python
 type(square)
+# → function
 ```
 
+The function has a type (`function`), and — like any object — it can be:
 
+- **Bound to another name** (assigned to a variable)
+- **Passed as an argument**
+- **Returned from another function**
+- **Stored in containers**
+- **Inspected** (`id`, `type`, `__name__`, `__doc__`, …)
 
-
-    function
-
-
-
-در واقع، حتی می‌توانیم آن‌ها را به یک متغیر نسبت دهیم:
-
+### Rebinding
 
 ```python
 f = square
+type(f)      # → function
+f is square  # → True   (the same object, just two names)
+f(2)         # → 4
+type(f(2))   # → int    (calling a function returns an object)
 ```
 
+`f` and `square` are **two names for the same object** — not a copy. `f is square` returning `True` confirms this: identity, not equality.
 
-```python
-type(f)
-```
+---
 
-
-
-
-    function
-
-
-
-
-```python
-f is square
-```
-
-
-
-
-    True
-
-
-
-
-```python
-f(2)
-```
-
-
-
-
-    4
-
-
-
-
-```python
-type(f(2))
-```
-
-
-
-
-    int
-
-
-
-یک تابع می‌تواند یک تابع بازگرداند
-
+## A Function Can Return a Function
 
 ```python
 def cube(a):
     return a ** 3
-```
 
-
-```python
 def select_function(fn_id):
     if fn_id == 1:
         return square
@@ -388,83 +107,122 @@ def select_function(fn_id):
         return cube
 ```
 
+`select_function` **returns a function object** — not the result of calling one, but the function itself.
 
 ```python
 f = select_function(1)
-print(hex(id(f)))
-print(hex(id(square)))
-print(hex(id(cube)))
-print(type(f))
-print('f is square: ', f is square)
-print('f is cube: ', f is cube)
-print(f)
-print(f(2))
+
+print(hex(id(f)))        # 0x21257457b70
+print(hex(id(square)))   # 0x21257457b70   ← same object
+print(hex(id(cube)))     # 0x21255fab8c8
+
+print(type(f))                   # <class 'function'>
+print('f is square: ', f is square)   # True
+print('f is cube: ',   f is cube)     # False
+print(f)                         # <function square at 0x...>
+print(f(2))                      # 4
 ```
 
-    0x21257457b70
-    0x21257457b70
-    0x21255fab8c8
-    <class 'function'>
-    f is square:  True
-    f is cube:  False
-    <function square at 0x0000021257457B70>
-    4
+The `id()` values are the smoking gun: `f` and `square` share an address — they are **the very same object**.
 
-
+Selecting the other branch:
 
 ```python
 f = select_function(2)
-print(hex(id(f)))
-print(hex(id(square)))
-print(hex(id(cube)))
-print(type(f))
-print('f is square: ', f is square)
-print('f is cube: ', f is cube)
-print(f)
-print(f(2))
+
+print(hex(id(f)))        # 0x21255fab8c8
+print(hex(id(square)))   # 0x21257457b70
+print(hex(id(cube)))     # 0x21255fab8c8   ← same object as f
+
+print(type(f))                   # <class 'function'>
+print('f is square: ', f is square)   # False
+print('f is cube: ',   f is cube)     # True
+print(f)                         # <function cube at 0x...>
+print(f(2))                      # 8
 ```
 
-    0x21255fab8c8
-    0x21257457b70
-    0x21255fab8c8
-    <class 'function'>
-    f is square:  False
-    f is cube:  True
-    <function cube at 0x0000021255FAB8C8>
-    8
+### Chained calls
 
-
-حتی می‌توانستیم آن را به این شکل فراخوانی کنیم:
-
+Because the return value is itself a function, you can immediately call it:
 
 ```python
 select_function(1)(5)
+# → 25
 ```
 
+`select_function(1)` returns `square`, and `(5)` calls it. Two operations, one expression — a direct consequence of functions being ordinary values.
 
+---
 
-
-    25
-
-
-
-یک تابع می‌تواند به‌عنوان آرگومان به تابع دیگری پاس داده شود
-
-(این مثال کاملاً بی‌فایده است، اما نکته را به‌خوبی نشان می‌دهد)
-
+## A Function Can Take a Function as an Argument
 
 ```python
 def exec_function(fn, n):
     return fn(n)
 ```
 
+The parameter `fn` is just a name — and names can point to *any* object, including a function.
 
 ```python
 result = exec_function(cube, 2)
-print(result)
+print(result)   # 8
 ```
 
-    8
+This is *the* mechanism that enables:
 
+- **Higher-order functions** — functions that accept or return other functions
+- **Callbacks** — passing a function to be invoked later
+- **Map/filter/reduce**-style patterns
+- **Decorators** — functions that wrap other functions
+- **Dependency injection** — parameterizing behavior instead of hard-coding it
 
-ما در طول این دوره **بسیار** بیشتر به توابع به‌عنوان آرگومان بازخواهیم گشت!
+We'll return to functions-as-arguments **extensively** throughout this course.
+
+---
+
+## Why "Everything Is an Object" Matters
+
+This isn't just a slogan — it's the reason a huge range of Python idioms work:
+
+| Concept | Enabled by |
+|---|---|
+| `type(x)` works on anything | Every value is an instance of some class |
+| `dir(x)`, `help(x)` work uniformly | Every object exposes attributes/methods |
+| Functions can be passed/returned | Functions are first-class objects |
+| Classes can be passed/returned | Classes are objects too (`type` is a class) |
+| Everything can be stored in a list/dict | Containers hold references to arbitrary objects |
+| `f is g` distinguishes same vs. equal | Objects have identity |
+| Monkey-patching, decorators, metaprogramming | Classes and functions are mutable objects |
+
+Not everything in Python is an *instance* of a *user-defined* class — but **every value has a type, and every type is itself an object**. The uniformity is what makes Python's object model both simple and powerful.
+
+---
+
+## Summary
+
+```text
+Everything is an object.
+
+    - 10              is an int object  (instance of class int)
+    - "hello"         is a str object
+    - square          is a function object
+    - int             is a type object  (an instance of type)
+    - None            is an object      (the NoneType singleton)
+
+Every object has:
+    - a type            (type(obj))
+    - an identity       (id(obj))
+    - attributes        (obj.attr, dir(obj))
+
+Because functions are objects:
+    - They can be assigned to names      f = square
+    - They can be passed as arguments    exec_function(cube, 2)
+    - They can be returned                select_function(1)
+    - They can be called immediately     select_function(1)(5)
+
+Implications:
+    f is square  → True   (same object, two names)
+    int('10', 2) → 2      (constructors are just class calls)
+```
+
+Once you internalize that **a name is a reference to an object**, and **every object carries a type and an identity**, statements like `f = square`, `f is square`, and `select_function(1)(5)` stop looking like special tricks. They're just the ordinary behavior of objects in a uniformly object-oriented language.
